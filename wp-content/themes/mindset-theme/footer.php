@@ -16,6 +16,17 @@
 			
 		</div><!-- .footer-contact -->
 		<div class="footer-menus">
+			<nav class="footer-navigation" id="footer-navigation">
+				<?php
+					wp_nav_menu(array("theme_location" => "footer-left"));
+				?>
+			</nav>
+
+			<nav class="footer-navigation" id="footer-navigation">
+				<?php
+					wp_nav_menu(array("theme_location" => "footer-right"));
+				?>
+			</nav>
 				
 		</div><!-- .footer-menus -->
 		<div class="site-info">
