@@ -46,6 +46,11 @@ function fwd_setup() {
 		*/
 	add_theme_support( 'post-thumbnails' );
 
+
+	// Add custom image sizes
+	add_image_size( 'portrait-blog', 200, 250, true );
+	add_image_size( 'latest-blog-posts', 400, 200, true );
+
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus(
 		array(
@@ -198,3 +203,72 @@ require get_template_directory() . '/inc/customizer.php';
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
 }
+
+// add theme color meta tag
+function fwd_theme_color() {
+	echo '<meta name="theme-color" content="#FFF200" />';
+}
+add_action( 'wp_head', 'fwd_theme_color', 1 );
+
+// change excerpt length
+function fwd_excerpt_length( $length ) {
+	return 20;
+}
+add_filter( 'excerpt_length', 'fwd_excerpt_length', 999, 1 );
+
+// change excerpt more to a link to the post
+function fwd_excerpt_more( $more ) {
+	$more = '... <a class="read-more" href="' . esc_url(get_permalink()) . '">' . __( 'Continue Reading', 'fwd' ) . '</a>';
+	return $more;
+}
+add_filter( 'excerpt_more', 'fwd_excerpt_more' );
+
+// add a block template for the test (block) page
+function fwd_block_editor_templates() {
+    // Replace '14' with the Page ID
+    if ( isset( $_GET['post'] ) && '45' == $_GET['post'] ) {
+        $post_type_object = get_post_type_object( 'page' );
+        $post_type_object->template = array(
+            // define blocks here...
+			array( 
+				'core/paragraph', 
+				array( 
+					'placeholder' => 'Add your introduction here...'
+				) 
+			),
+			array( 
+				'core/heading', 
+				array( 
+					'placeholder' => 'Add your heading here...',
+					'level' => 2
+				) 
+			),
+			array( 
+				'core/image', 
+				array( 
+					'align' => 'left', 
+					'sizeSlug' => 'medium' 
+				)
+			),
+			array( 
+				'core/paragraph', 
+				array( 
+					'placeholder' => 'Add text here...'
+				) 
+			),
+        );
+		$post_type_object->template_lock = 'all';
+    }
+}
+add_action( 'init', 'fwd_block_editor_templates' );
+
+// disable block editor for any pages in the array
+function fwd_post_filter( $use_block_editor, $post ) {
+    $page_ids = array( 56 );
+    if ( in_array( $post->ID, $page_ids ) ) {
+        return false;
+    } else {
+        return $use_block_editor;
+    }
+}
+add_filter( 'use_block_editor_for_post', 'fwd_post_filter', 10, 2 );

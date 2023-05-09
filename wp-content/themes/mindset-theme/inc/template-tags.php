@@ -7,6 +7,14 @@
  * @package FWD_Starter_Theme
  */
 
+function my_privacy_policy_link() {
+    $privacy_policy_id = get_option('wp_page_for_privacy_policy');
+    $privacy_policy_link = esc_url(get_permalink($privacy_policy_id));
+    if ($privacy_policy_id && $privacy_policy_link) {
+        echo '<a href="' . $privacy_policy_link . '">' . esc_html__('Privacy Policy', 'fwd') . '</a>';
+    }
+}
+
 if ( ! function_exists( 'fwd_posted_on' ) ) :
 	/**
 	 * Prints HTML with meta information for the current post-date/time.
@@ -124,21 +132,21 @@ if ( ! function_exists( 'fwd_post_thumbnail' ) ) :
 			return;
 		}
 
-		if ( is_singular() ) :
-			?>
-
+	
+		if ( is_singular() ) : ?>
+ 
 			<div class="post-thumbnail">
-				<?php the_post_thumbnail(); ?>
-			</div><!-- .post-thumbnail -->
-
+				<?php the_post_thumbnail( 'large' ); ?>
+			</div>
+		 
 		<?php else : ?>
-
-			<a class="post-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
+		 
+			<a class="post-thumbnail alignleft" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
 				<?php
 					the_post_thumbnail(
-						'post-thumbnail',
-						array(
-							'alt' => the_title_attribute(
+						'portrait-blog',
+							array(
+								'alt' => the_title_attribute(
 								array(
 									'echo' => false,
 								)
@@ -147,9 +155,8 @@ if ( ! function_exists( 'fwd_post_thumbnail' ) ) :
 					);
 				?>
 			</a>
-
-			<?php
-		endif; // End is_singular().
+		 
+		<?php endif; // End is_singular()
 	}
 endif;
 
