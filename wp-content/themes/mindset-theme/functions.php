@@ -264,7 +264,7 @@ add_action( 'init', 'fwd_block_editor_templates' );
 
 // disable block editor for any pages in the array
 function fwd_post_filter( $use_block_editor, $post ) {
-    $page_ids = array( 56 );
+    $page_ids = array( 56, 6 );
     if ( in_array( $post->ID, $page_ids ) ) {
         return false;
     } else {
@@ -272,3 +272,29 @@ function fwd_post_filter( $use_block_editor, $post ) {
     }
 }
 add_filter( 'use_block_editor_for_post', 'fwd_post_filter', 10, 2 );
+
+// add a block template for the contact page with 2 blocks for paragraph and shortcode (id=16)
+function fwd_block_editor_contact_templates() {
+	// Replace '14' with the Page ID
+	if ( isset( $_GET['post'] ) && '16' == $_GET['post'] ) {
+		$post_type_object = get_post_type_object( 'page' );
+		$post_type_object->template = array(
+			// define blocks here...
+			array( 
+				'core/paragraph', 
+				array( 
+					'placeholder' => 'Add your introduction here...'
+				) 
+			),
+			array( 
+				'core/shortcode', 
+				array( 
+					'align' => 'left', 
+					'sizeSlug' => 'medium' 
+				)
+			),
+		);
+		$post_type_object->template_lock = 'all';
+	}
+}
+add_action( 'init', 'fwd_block_editor_contact_templates' );
