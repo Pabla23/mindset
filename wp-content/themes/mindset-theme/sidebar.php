@@ -20,4 +20,8 @@ if ( ! is_active_sidebar( 'sidebar-1' ) || ! is_active_sidebar( 'sidebar-2' ) ) 
 		dynamic_sidebar( 'sidebar-1' );
 	}
 	?>
+	
+	<?php get_template_part( 'template-parts/work', 'categories' ) ?>
+	<!-- display a random testimonial -->
+	<?php get_template_part( 'template-parts/content', 'fwd-testimonials' ) ?>
 </aside><!-- #secondary -->

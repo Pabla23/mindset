@@ -45,7 +45,40 @@ get_header();
 
 		<section class="home-work"></section>
 
-		<section class="home-work"></section>
+		<section class="home-work">
+			<h2>Featured Work</h2>
+			<?php
+	
+				$args = array(
+					'post_type'      => 'fwd-work',
+					'posts_per_page' => 4,
+					'tax_query'      => array(
+						array(
+							'taxonomy' => 'fwd-featured',
+							'field'    => 'slug',
+							'terms'    => 'front-page'
+						),
+					),
+				);
+				
+				$query = new WP_Query( $args );
+				
+				if ( $query -> have_posts() ){
+					while ( $query -> have_posts() ) {
+						$query -> the_post();
+						?>
+						<article>
+							<a href="<?php the_permalink() ?>">
+								<?php the_post_thumbnail('medium'); ?>
+								<h3><?php the_title() ?></h3>
+							</a>
+						</article>
+						<?php
+					}
+					wp_reset_postdata();
+				} 
+			?>
+		</section>
 
 		<section class="home-left">
 			<?php
@@ -69,12 +102,12 @@ get_header();
 				if (function_exists('the_field')) {
 					if (get_field('right_section_heading')) {
 						echo '<h2>';
-						esc_html__(the_field('right_section_heading'));
+						esc_html_e(the_field('right_section_heading'));
 						echo '</h2>';
 					}
 					if (get_field('right_section_content')) {
 						echo '<p>';
-						esc_html__(the_field('right_section_content'));
+						esc_html_e(the_field('right_section_content'));
 						echo '</p>';
 					}
 				}

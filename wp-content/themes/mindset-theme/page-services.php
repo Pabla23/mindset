@@ -15,23 +15,85 @@
 get_header();
 ?>
 
-	<main id="primary" class="site-main">
+<main id="primary" class="site-main">
 
-		<?php
-		while ( have_posts() ) :
-			the_post();
+<?php while ( have_posts() ) : the_post(); ?>
 
-			get_template_part( 'template-parts/content', 'page' );
+	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-			// If comments are open or we have at least one comment, load up the comment template.
-			if ( comments_open() || get_comments_number() ) :
-				comments_template();
-			endif;
+		<header class="entry-header">
+			<?php the_title( '<h1 class="entry-title">', '</h1>' ); ?>
+		</header>
 
-		endwhile; // End of the loop.
-		?>
+		<div class="entry-content">
+			<?php the_content(); ?>
 
-	</main><!-- #primary -->
+			<?php 
+					
+
+
+				$terms = get_terms( 
+					array(
+						'taxonomy' => 'fwd-service-category',
+					) 
+				);
+
+				if ( $terms && ! is_wp_error( $terms ) ) {
+					foreach ( $terms as $term ) {
+						// Add your WP_Query() code here
+						$args = array(
+							'post_type'      => 'fwd-service',
+							'posts_per_page' =>  2,
+							'orderby'        => $term->name,
+							'order'          => 'ASC',
+							'tax_query'      => array(
+								array(
+									'taxonomy' => 'fwd-service-category',
+									'field'    => 'slug',
+									'terms'    => $term->slug,
+								),
+							),
+						);
+						
+						$query = new WP_Query( $args );
+						
+						if ( $query -> have_posts() ) {
+							echo '<h2>'. esc_html( $term->name ) .'</h2>';
+							// Output Navigation
+							while ( $query -> have_posts() ) {
+								$query -> the_post();
+								echo '<a href="#'. esc_attr( get_the_ID() ) .'">'. esc_html( get_the_title() ) .'</a>';
+							}
+							wp_reset_postdata();
+						
+							// Output Content
+							while ( $query -> have_posts() ) {
+								$query -> the_post();
+						
+								if ( function_exists( 'get_field' ) ) {
+									if ( get_field( 'service_description' ) ) {
+										echo '<h2 id="'. esc_attr( get_the_ID() ) .'">'. esc_html( get_the_title() ) .'</h2>';
+										the_field( 'service_description' );
+									}
+								}
+						
+							}
+							wp_reset_postdata();
+						}
+						// Use $term->slug in your tax_query
+						// Use $term->name to organize the posts
+					}
+				}
+			?>
+		</div>
+
+	</article>
+
+<?php endwhile; ?>
+
+<?php get_template_part( 'template-parts/work', 'categories' ) ?>
+
+</main>
 
 <?php
 get_sidebar();

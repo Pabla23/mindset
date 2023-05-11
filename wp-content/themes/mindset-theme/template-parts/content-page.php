@@ -26,6 +26,21 @@
 				'after'  => '</div>',
 			)
 		);
+
+		if ( function_exists ( 'get_field' ) ) {
+
+			if ( get_field( 'contact_address' ) ) {
+				echo '<p>';
+				esc_html_e(the_field( 'contact_address' ));
+				echo '</p>';
+			}
+
+			if ( get_field( 'contact_email' ) ) {
+				echo '<p>';
+				esc_html_e(get_field( 'contact_email' ));
+				echo '</p>';
+			}
+		} 
 		?>
 	</div><!-- .entry-content -->
 
